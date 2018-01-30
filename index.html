@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pattern Code Generator</title>
+  <style>
+  .hidden {
+  	display: none;
+  }
+
+  .visible.config {
+  	display: block;
+  	border: 1px green solid;
+  	width: 95vw;
+  }
+  </style>
+</head>
+<body>
+<h1>Pattern Code Generator</h1>
+<p>From <input id="start" type="number"> to <input id="last" type="number"> at array position <input id="pos" type="number">.</p>
+<p>Set pattern type to <select id="type">
+	<option value="goBlack">Off</option>
+	<option value="aze">AZE Theme</option>
+	<option value="scroll">Scroll</option>
+	<option value="flash">Flash</option>
+</select>.</p>
+<div class="visible config goBlack">No Further Configuation Needed.</div>
+<div class="hidden config aze">
+	<p>With a segment length of <input id="seg-length-aze" type="number"> LEDs.</p>
+	<p>Check this to make LED scroll reverse: <input id="come-in-aze" type="checkbox"></p>
+</div>
+<div class="hidden config scroll">
+	<p>With a color scheme of <input id="scroll-color-1" type="color"> and <input id="scroll-color-2" type="color">.</p>
+	<p>And a segment length of <input id="seg-length-scroll" type="number"> LEDs.</p>
+	<p>Check this to make LED scroll reverse: <input id="come-in-scroll" type="checkbox"></p>
+</div>
+<div class="hidden config flash">
+	<p>With a color scheme of <input id="flash-color-1" type="color"> and <input id="flash-color-2" type="color">.</p>
+	<p>And flash speed of <input id="flash-speed" type="number"> (higher is slower).</p>
+</div>
+<br>\/ \/ <button id="go">Generate Code!</button> \/ \/<br>
+<textarea id="code"></textarea>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+$("#type").change(e => {
+	$(".config.visible").addClass("hidden").removeClass("visible")
+	$(`.config.${e.target.value}`).addClass("visible").removeClass("hidden")
+})
+
+$("#go").click(e => {
+	let arr = []
+	switch ($("#type").val()) {
+		case "flash":
+			arr = ["0x" + $("#flash-color-1").val().slice(1), "0x" + $("#flash-color-2").val().slice(1), $("#come-in-aze").prop("checked")]
+		break;
+		case "scroll":
+			arr = ["0x" + $("#scroll-color-1").val().slice(1), "0x" + $("#scroll-color-2").val().slice(1), $("#seg-length-scroll").val(), $("#come-in-aze").prop("checked")]
+		break;
+		case "aze":
+			arr = [$("#seg-length-aze").val(), $("#come-in-aze").prop("checked")]
+		break;
+		default:
+		break;
+	}
+	$("#code").val(`patterns[${$("#pos").val()}].setStrip(&strip);
+patterns[${$("#pos").val()}].setLocation(${$("#start").val()}, ${$("#last").val()});
+patterns[${$("#pos").val()}].${$("#type").val()}(${arr.join(", ")});`)
+})
+</script>
+</body>
+</html>
