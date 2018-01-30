@@ -50,7 +50,7 @@ $("#go").click(e => {
 	let arr = []
 	switch ($("#type").val()) {
 		case "flash":
-			arr = ["0x" + $("#flash-color-1").val().slice(1), "0x" + $("#flash-color-2").val().slice(1), $("#come-in-aze").prop("checked")]
+			arr = ["0x" + $("#flash-color-1").val().slice(1), "0x" + $("#flash-color-2").val().slice(1), $("#flash-speed").val()]
 		break;
 		case "scroll":
 			arr = ["0x" + $("#scroll-color-1").val().slice(1), "0x" + $("#scroll-color-2").val().slice(1), $("#seg-length-scroll").val(), $("#come-in-aze").prop("checked")]
